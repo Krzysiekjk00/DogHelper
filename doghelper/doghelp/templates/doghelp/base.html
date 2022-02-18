@@ -9,7 +9,7 @@
     <div>
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% block form %}{{ form.as_p }}{% endblock %}
             <input type="submit" value="{% block submit %}Save{% endblock %}">
         </form>
     </div>
