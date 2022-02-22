@@ -1,12 +1,12 @@
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from doghelp.forms import LoginForm
-from doghelp.contexts.doghelp.context import login_ctx
+from doghelp.forms import LoginForm, NewCommonUserForm
 
 # Create your views here.
 
@@ -14,6 +14,9 @@ from doghelp.contexts.doghelp.context import login_ctx
 class LoginView(View):
 
     def get(self, request):
+        login_ctx = {
+            'form': LoginForm()
+        }
         return render(request, 'doghelp/login.html', login_ctx)
 
     def post(self, request):
@@ -29,7 +32,11 @@ class LoginView(View):
                     return redirect(url)
                 return HttpResponseRedirect(reverse('doghelp:test'))
             else:
-                return HttpResponseRedirect(request, 'doghelp/login.html', login_ctx)
+                form.add_error(field=None, error='Wrong Username or Password. Try again.')
+        login_ctx = {
+            'form': form
+        }
+        return render(request, 'doghelp/login.html', login_ctx)
 
 
 class LogoutView(LoginRequiredMixin, View):
@@ -37,6 +44,28 @@ class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         return HttpResponseRedirect(reverse('doghelp:login'))
+
+
+class NewUserView(View):
+
+    def get(self, request):
+        ctx = {
+            'form': NewCommonUserForm()
+        }
+        return render(request, 'doghelp/new_user.html', ctx)  # TO DO: SPRÓBOWAĆ OBLECIEĆ TWORZENIE 2 RODZAJÓW UŻYTKOWNIKÓW JEDNYM WIDOKIEM, DZIEDZICZENIEM TEMPLATEK!
+
+    def post(self, request):
+        form = NewCommonUserForm(request.POST)
+        if form.is_valid():
+            del form.cleaned_data['repassword']
+            user = User.objects.create_user(**form.cleaned_data)
+            group = Group.objects.get(name='Common')
+            group.user_set.add(user)
+            return HttpResponseRedirect(reverse('doghelp:login'))
+        ctx = {
+            'form': NewCommonUserForm()
+        }
+        return render(request, 'doghelp/login', ctx)
 
 
 class TestView(LoginRequiredMixin, View):

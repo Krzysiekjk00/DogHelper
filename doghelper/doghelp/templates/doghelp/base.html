@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Welcome to Dog Helper App!{% endblock %}</title>
 </head>
-<body>
+<body>{% block body %}
     <div>
         <form action="" method="POST">
             {% csrf_token %}
             {% block form %}{{ form.as_p }}{% endblock %}
             <input type="submit" value="{% block submit %}Save{% endblock %}">
         </form>
-    </div>
+        <hr>
+        {% block additional_buttons %}{% endblock %}
+    </div>{% endblock %}
 </body>
 </html>
