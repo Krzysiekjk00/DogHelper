@@ -10,5 +10,5 @@ class Video(models.Model):
     upload_time = models.DateTimeField('date_uploaded')
     videofile = models.FileField(upload_to='videos/', null=True, verbose_name='')
 
-    def __str__(self):
-        return self.name + ': ' + str(self.videofile)
+    # def __str__(self):
+    #     return self.name + ': ' + str(self.videofile)
