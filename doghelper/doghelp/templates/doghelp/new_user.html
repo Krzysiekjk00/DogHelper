@@ -1,3 +1,4 @@
 {% extends 'doghelp/base.html' %}
 {% block title %}Common user creation panel{% endblock %}
-{% block submit %}Create common user{% endblock %}
+{% block submit %}Create user{% endblock %}
+{% block additional_buttons %}<a href="{% url 'doghelp:login' %}"><button>Back to Log in page</button></a>{% endblock %}

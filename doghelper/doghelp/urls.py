@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('new_user/', NewUserView.as_view(), name='new_user'),
     path('test/', TestView.as_view(), name='test')
+    # path('<int:user_id>/new_case/', NewCaseView.as_view(), name='new_case')
 ]

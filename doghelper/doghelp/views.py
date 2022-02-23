@@ -6,7 +6,7 @@ from django.views import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from doghelp.forms import LoginForm, NewCommonUserForm
+from doghelp.forms import LoginForm, NewUserForm
 
 # Create your views here.
 
@@ -50,22 +50,27 @@ class NewUserView(View):
 
     def get(self, request):
         ctx = {
-            'form': NewCommonUserForm()
+            'form': NewUserForm()
         }
-        return render(request, 'doghelp/new_user.html', ctx)  # TO DO: SPRÓBOWAĆ OBLECIEĆ TWORZENIE 2 RODZAJÓW UŻYTKOWNIKÓW JEDNYM WIDOKIEM, DZIEDZICZENIEM TEMPLATEK!
+        return render(request, 'doghelp/new_user.html', ctx)
 
     def post(self, request):
-        form = NewCommonUserForm(request.POST)
+        form = NewUserForm(request.POST)
         if form.is_valid():
+            is_specialist = form.cleaned_data['is_specialist']
+            del form.cleaned_data['is_specialist']
             del form.cleaned_data['repassword']
             user = User.objects.create_user(**form.cleaned_data)
-            group = Group.objects.get(name='Common')
+            if is_specialist:
+                group = Group.objects.get(name='Specialist')
+            else:
+                group = Group.objects.get(name='Common')
             group.user_set.add(user)
             return HttpResponseRedirect(reverse('doghelp:login'))
         ctx = {
-            'form': NewCommonUserForm()
+            'form': form
         }
-        return render(request, 'doghelp/login', ctx)
+        return render(request, 'doghelp/new_user.html', ctx)
 
 
 class TestView(LoginRequiredMixin, View):
@@ -75,3 +80,11 @@ class TestView(LoginRequiredMixin, View):
 
     def post(self, request):
         return HttpResponseRedirect(reverse('doghelp:logout'))
+
+
+# class NewCaseView(LoginRequiredMixin, View):
+#
+#     def get(self, request, user_id):
+#         return render(request, 'doghelp/new_case.html')
+#
+#     def post(self, request, user_id):
