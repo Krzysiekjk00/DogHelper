@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from doghelp.validators import validate_username
-from doghelp.models import Case
+from doghelp.models import Case, Video
 
 
 class LoginForm(forms.Form):
@@ -24,7 +24,14 @@ class NewUserForm(forms.Form):
             raise ValidationError('Given password does not equal to the repeated one.')
 
 
-class NewCaseForm(forms.ModelForm):
+class VideosForm(forms.ModelForm):
     class Meta:
-        model = Case
-        exclude = ['creation_date', 'last_modified', 'status', 'author', 'pet_specialist']
+        model = Video
+        fields = ['name', 'videofile', 'author']
+        widgets = {'author': forms.HiddenInput()}
+
+
+# class NewCaseForm(forms.ModelForm):
+#     class Meta:
+#         model = Case
+#         exclude = ['creation_date', 'last_modified', 'status', 'author', 'pet_specialist']

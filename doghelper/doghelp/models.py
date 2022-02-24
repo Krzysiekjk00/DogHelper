@@ -16,6 +16,7 @@ CASE_STATUSES = (
 
 class Video(models.Model):
     name = models.CharField(max_length=512)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)ss', related_query_name='%(class)s')
     upload_time = models.DateTimeField(auto_now_add=True)
     videofile = models.FileField(upload_to='videos/', null=True, verbose_name='')
 

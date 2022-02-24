@@ -130,5 +130,5 @@ LOGIN_URL = 'doghelp:login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT= path.join(BASE_DIR, 'media/doghelp/')
+MEDIA_ROOT= path.join(BASE_DIR, 'doghelp/media/doghelp/')
 MEDIA_URL= "/media/doghelp/"

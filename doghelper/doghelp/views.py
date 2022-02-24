@@ -6,7 +6,8 @@ from django.views import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from doghelp.forms import LoginForm, NewUserForm
+from doghelp.forms import LoginForm, NewUserForm, VideosForm
+from doghelp.models import Video
 
 # Create your views here.
 
@@ -80,6 +81,25 @@ class TestView(LoginRequiredMixin, View):
 
     def post(self, request):
         return HttpResponseRedirect(reverse('doghelp:logout'))
+
+
+class VideosView(LoginRequiredMixin, View):
+
+    def get(self, request, user_id):
+        ctx = {
+            'form': VideosForm(),
+            'user': User.objects.get(id=user_id)
+        }
+        return render(request, 'doghelp/videos.html', ctx)
+
+    def post(self, request, user_id):
+        form = VideosForm(request.POST, request.FILES)
+        # raise Exception(form, form.is_valid())
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('doghelp:test'))
+        return render(request, 'doghelp/test.html')
+
 
 
 # class NewCaseView(LoginRequiredMixin, View):
