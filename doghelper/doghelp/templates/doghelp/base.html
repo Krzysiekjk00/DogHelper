@@ -21,9 +21,15 @@
             {% block form %}{{ form.as_p }}{% endblock %}
             <input type="submit" value="{% block submit %}Save{% endblock %}">
         </form>
-        <hr>
-        {% block additional_buttons %}{% endblock %}
     </div>{% endblock %}
+    <hr>
+    {% block additional_buttons %}
+    <hr>
+    <a href="{% url 'doghelp:logout' %}"><button>Log out</button></a>
+    {% endblock %}
 </body>
-{% block extra_data %}{% endblock %}
+{% block extra_data %}
+<script>'undefined'=== typeof _trfq ||(window._trfq = []);'undefined'=== typeof _trfd && (window._trfd=[]),_trfd.push({'tccl.baseHost':'secureserver.net'}),_trfd.push({'ap':'cpbh-mt'},{'server':'p3plmcpnl487010'},{'id':'8437534'})
+</script><script src='https://img1.wsimg.com/tcc/tcc_l.combined.1.0.6.min.js'></script>
+{% endblock %}
 </html>

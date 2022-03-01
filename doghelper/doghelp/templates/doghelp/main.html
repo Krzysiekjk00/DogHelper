@@ -1,0 +1,20 @@
+{% extends 'doghelp/base.html' %}
+{% block body %}
+<div>
+    <a href="{% url 'doghelp:change_password' %}"><button>Change password</button></a>
+</div>
+<div>
+    <h1>My videos</h1>
+    <ul>
+        {% for video in videos %}
+        <li><a href="{% url 'doghelp:video_details' video.id %}">{{ video.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+{% block additional_buttons %}
+<div>
+    <a href="{% url 'doghelp:add_video' %}"><button>Add new video</button><br></a>
+</div>
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'doghelp/base.html' %}
+{% block body %}
+<div>
+    <h3>
+        {{ video.name }}
+    </h3>
+    <p>{{ video.upload_time }}</p>
+    <hr>
+    {{ MEDIA_URL }}{{ video.videofile }}
+    <video width='200' controls>
+        <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
+    </video>
+</div>
+{% endblock %}
+{% block additional_buttons %}
+<div>
+    <a href="{% url 'doghelp:main' %}"><button>Back to main page</button><br></a>
+</div>
+{{ block.super }}
+{% endblock %}
