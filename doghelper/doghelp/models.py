@@ -21,7 +21,11 @@ class Video(models.Model):
     videofile = models.FileField(upload_to='videos/', null=True, verbose_name='')
 
     def __str__(self):
-        return self.name + ': ' + str(self.videofile)
+        return self.name
+
+    def delete(self, using=None, keep_parents=None):
+        self.videofile.storage.delete(self.videofile.name)
+        super().delete()
 
 
 class Case(models.Model):

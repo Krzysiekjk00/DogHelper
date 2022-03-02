@@ -6,7 +6,7 @@ from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.shortcuts import render, redirect
 from django.views import View, generic
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from doghelp.forms import LoginForm, NewUserForm, VideosForm
 from doghelp.models import Video
@@ -28,7 +28,7 @@ class LoginView(View):
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
+            password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
@@ -51,7 +51,7 @@ class LogoutView(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse('doghelp:login'))
 
 
-class NewUserView(View): # password problem!!!!
+class NewUserView(View):
 
     def get(self, request):
         ctx = {
@@ -62,13 +62,9 @@ class NewUserView(View): # password problem!!!!
     def post(self, request):
         form = NewUserForm(request.POST)
         if form.is_valid():
-            is_specialist = form.cleaned_data['is_specialist']
-            form.cleaned_data['password'] = form.cleaned_data['password1']
-            del form.cleaned_data['is_specialist']
-            del form.cleaned_data['password2']
-            del form.cleaned_data['password1']
-            user = User.objects.create_user(**form.cleaned_data)
-            if is_specialist:
+            user_data = form.cleaned_data
+            user = User.objects.create_user(username=user_data['username'], email=user_data['email'], password=user_data['password1'])
+            if user_data['is_specialist']:
                 group = Group.objects.get(name='Specialist')
             else:
                 group = Group.objects.get(name='Common')
@@ -80,7 +76,7 @@ class NewUserView(View): # password problem!!!!
         return render(request, 'doghelp/new_user.html', ctx)
 
 
-class ChangePasswordView(View):
+class ChangePasswordView(LoginRequiredMixin, View):
     def get(self, request):
         ctx = {
             'form': PasswordChangeForm(request.user)
@@ -105,22 +101,14 @@ class ChangePasswordView(View):
 # Other Views:
 
 
-class MainPageView(View):
+class MainPageView(LoginRequiredMixin, View):
 
     def get(self, request):
         ctx = {
-            'videos': Video.objects.filter(author_id=request.user.id)
+            'videos': Video.objects.filter(author_id=request.user.id).order_by('-upload_time'),
+            'user': request.user
         }
         return render(request, 'doghelp/main.html', ctx)
-
-
-# class TestView(LoginRequiredMixin, View):
-#
-#     def get(self, request):
-#         return render(request, 'doghelp/test.html')
-#
-#     def post(self, request):
-#         return HttpResponseRedirect(reverse('doghelp:logout'))
 
 
 class VideosView(LoginRequiredMixin, View):
@@ -140,9 +128,14 @@ class VideosView(LoginRequiredMixin, View):
         return render(request, 'doghelp/main.html')
 
 
-class VideoDetailsView(generic.DetailView):
+class VideoDetailsView(LoginRequiredMixin, generic.DetailView):  # TO DO: Check permissions!!!
     model = Video
     template_name = 'doghelp/video_details.html'
+
+
+class DeleteVideoView(LoginRequiredMixin, generic.DeleteView):
+    model = Video
+    success_url = reverse_lazy('doghelp:main')
 
 
 # class NewCaseView(LoginRequiredMixin, View):

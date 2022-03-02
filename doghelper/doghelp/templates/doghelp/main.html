@@ -1,15 +1,22 @@
 {% extends 'doghelp/base.html' %}
 {% block body %}
+<h2>You are logged in as {{ user }}</h2>
 <div>
     <a href="{% url 'doghelp:change_password' %}"><button>Change password</button></a>
 </div>
 <div>
-    <h1>My videos</h1>
+    <h3>My videos</h3>
+    {% if videos %}
     <ul>
         {% for video in videos %}
         <li><a href="{% url 'doghelp:video_details' video.id %}">{{ video.name }}</a></li>
         {% endfor %}
     </ul>
+    {% else %}
+    <p>
+        You do not have any uploaded videos.
+    </p>
+    {% endif %}
 </div>
 {% endblock %}
 {% block additional_buttons %}
