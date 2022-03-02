@@ -138,6 +138,13 @@ class DeleteVideoView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy('doghelp:main')
 
 
+class VideoNameUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Video
+    fields = ['name']
+    success_url = reverse_lazy('doghelp:main')
+    template_name = 'doghelp/video_update_name.html'
+
+
 # class NewCaseView(LoginRequiredMixin, View):
 #
 #     def get(self, request, user_id):

@@ -1,6 +1,7 @@
 from django.urls import path
 
-from doghelp.views import LoginView, LogoutView, NewUserView, VideosView, ChangePasswordView, MainPageView, VideoDetailsView, DeleteVideoView
+from doghelp.views import LoginView, LogoutView, NewUserView, VideosView, ChangePasswordView, MainPageView, VideoDetailsView, DeleteVideoView,\
+    VideoNameUpdateView
 
 app_name = 'doghelp'
 urlpatterns = [
@@ -12,6 +13,7 @@ urlpatterns = [
     path('main/', MainPageView.as_view(), name='main'),
     path('add_video/', VideosView.as_view(), name='add_video'),
     path('videos/<int:pk>/', VideoDetailsView.as_view(), name='video_details'),
-    path('videos/<int:pk>/delete/', DeleteVideoView.as_view(), name='delete_video')
+    path('videos/<int:pk>/delete/', DeleteVideoView.as_view(), name='delete_video'),
+    path('videos/<int:pk>/update', VideoNameUpdateView.as_view(), name='update_video_name')
     # path('<int:user_id>/new_case/', NewCaseView.as_view(), name='new_case')
 ]
