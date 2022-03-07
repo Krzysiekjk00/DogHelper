@@ -1,0 +1,13 @@
+{% extends 'doghelp/base.html' %}
+{% block title %}Add new case{% endblock %}
+{% block body %}
+<div>
+    <form method="POST", action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="author" value="{{ user.id }}"/>
+        <input type="hidden" name="status" value="0"/>
+        <input type="submit" value="Create new case"/>
+    </form>
+</div>
+{% endblock %}

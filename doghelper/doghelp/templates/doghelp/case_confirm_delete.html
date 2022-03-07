@@ -1,0 +1,13 @@
+{% extends 'doghelp/base.html' %}
+{% block text_area %}
+<p>
+    Are you sure you want to delete video {{ video }}?
+</p>
+{% endblock %}
+{% block submit %}Confirm deletion{% endblock %}
+{% block additional_buttons %}
+    <div>
+        <a href="{% url 'doghelp:video_details' video.id %}"><button>Back to video_details</button><br></a>
+    </div>
+{{ block.super }}
+{% endblock %}

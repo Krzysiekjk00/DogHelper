@@ -1,0 +1,45 @@
+{% extends 'doghelp/base.html' %}
+{% block body %}
+    <div>
+        <h2>
+            {{ case.title }} authored by {{ case.author }}
+        </h2>
+        <h3>Pet name: {{ case.pet_name }}</h3>
+        <hr>
+        <h4>
+            Details:
+        </h4>
+        <p>
+            Creation time: {{ case.creation_date }}
+            <br>
+            Last modification date: {{ case.last_modified }}
+            <br>
+            Assigned specialist: {{ case.pet_specialist }}
+            <br>
+            Current status: {{ case.status }}
+            <br>
+            Is public to other users:
+            {% if case.is_public %}
+            Yes
+            {% else %}
+            No
+            {% endif %}
+        </p>
+        <hr>
+        <h4>Description:</h4>
+        <p>
+            {{ case.description }}
+        </p>
+        <video width='500' controls>
+            <source src='{{ MEDIA_URL }}{{ case.video.videofile }}' type='video/mp4'>
+        </video>
+    </div>
+{% endblock %}
+{% block additional_buttons %}
+    <div>
+        <!--<a href="{% url 'doghelp:update_video_name' video.id %}"><button>Update video name</button></a>-->
+        <!--<a href="{% url 'doghelp:delete_video' video.id %}"><button>Delete this video</button></a>-->
+        <a href="{% url 'doghelp:main' %}"><button>Back to main page</button><br></a>
+    </div>
+{{ block.super }}
+{% endblock %}

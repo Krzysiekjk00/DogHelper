@@ -22,6 +22,8 @@
 {% block additional_buttons %}
 <div>
     <a href="{% url 'doghelp:add_video' %}"><button>Add new video</button><br></a>
+    <br>
+    <a href="{% url 'doghelp:add_case' %}"><button>Create new case</button></a>
 </div>
 {{ block.super }}
 {% endblock %}
