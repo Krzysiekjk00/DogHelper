@@ -1,10 +1,5 @@
 {% extends 'doghelp/base.html' %}
-{% block text_area %}
-<p>
-    Are you sure you want to delete case "{{ case }}"?
-</p>
-{% endblock %}
-{% block submit %}Confirm deletion{% endblock %}
+{% block submit %}Update{% endblock %}
 {% block additional_buttons %}
     <div>
         <a href="{% url 'doghelp:case_details' case.id %}"><button>Back to case</button><br></a>

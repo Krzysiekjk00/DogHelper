@@ -39,6 +39,9 @@ class Case(models.Model):
     is_public = models.BooleanField(default=False)
     video = models.ForeignKey(Video, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(class)ss')
 
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     author = models.ForeignKey(User, default=None, on_delete=models.SET_DEFAULT, null=True)

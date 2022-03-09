@@ -43,5 +43,3 @@ class NewCaseForm(forms.ModelForm):
             raise ValidationError('Only letters are allowed in the "Pet name" field.')
         else:
             return cleaned_data
-
-

@@ -10,7 +10,7 @@ from django.urls import reverse, reverse_lazy
 
 from doghelp.forms import LoginForm, NewUserForm, AddVideosForm, NewCaseForm
 from doghelp.models import Video, Case
-from doghelp.mixins import UserPassessPermTestMixin
+from doghelp.mixins import UserVideoPermTestMixin, UserCaseFullPermTestMixin, UserCaseViewPermTestMixin
 
 # Create your views here.
 
@@ -106,7 +106,9 @@ class MainPageView(LoginRequiredMixin, View):
 
     def get(self, request):
         ctx = {
-            'videos': Video.objects.filter(author_id=request.user).order_by('-upload_time')
+            'videos': Video.objects.filter(author_id=request.user).order_by('-upload_time'),
+            'cases': Case.objects.filter(author_id=request.user).order_by('-last_modified'),
+            'public_cases': Case.objects.filter(is_public=True).exclude(author_id=request.user)
         }
         return render(request, 'doghelp/main.html', ctx)
 
@@ -127,17 +129,17 @@ class AddVideosView(LoginRequiredMixin, View):
         return render(request, 'doghelp/main.html')
 
 
-class VideoDetailsView(LoginRequiredMixin, UserPassessPermTestMixin, generic.DetailView):
+class VideoDetailsView(LoginRequiredMixin, UserVideoPermTestMixin, generic.DetailView):
     model = Video
     template_name = 'doghelp/video_details.html'
 
 
-class DeleteVideoView(LoginRequiredMixin, UserPassessPermTestMixin, generic.DeleteView):
+class DeleteVideoView(LoginRequiredMixin, UserVideoPermTestMixin, generic.DeleteView):
     model = Video
     success_url = reverse_lazy('doghelp:main')
 
 
-class VideoNameUpdateView(LoginRequiredMixin, UserPassessPermTestMixin, generic.UpdateView):
+class VideoNameUpdateView(LoginRequiredMixin, UserVideoPermTestMixin, generic.UpdateView):
     model = Video
     fields = ['name']
     success_url = reverse_lazy('doghelp:main')
@@ -166,7 +168,18 @@ class AddCaseView(LoginRequiredMixin, View):
         return render(request, 'doghelp/new_case.html', ctx)
 
 
-class CaseDetailsView(LoginRequiredMixin, UserPassessPermTestMixin, generic.DetailView): #  TO DO: Resolve the custom mixin permission problem!!
+class CaseDetailsView(LoginRequiredMixin, UserCaseViewPermTestMixin, generic.DetailView):
     model = Case
     template_name = 'doghelp/case_details.html'
 
+
+class DeleteCaseView(LoginRequiredMixin, UserCaseFullPermTestMixin, generic.DeleteView):
+    model = Case
+    success_url = reverse_lazy('doghelp:main')
+
+
+class UpdateCaseView(LoginRequiredMixin, UserCaseFullPermTestMixin, generic.UpdateView):  # TO DO: add proper possibility of updating pet_name (with validation) and videos (properly filtered).
+    model = Case
+    fields = ['description', 'is_public']
+    success_url = reverse_lazy('doghelp:main')
+    template_name = 'doghelp/case_update.html'

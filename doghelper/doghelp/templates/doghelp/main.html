@@ -17,6 +17,30 @@
         You do not have any uploaded videos.
     </p>
     {% endif %}
+    <h3>My cases</h3>
+    {% if cases %}
+    <ul>
+        {% for case in cases %}
+        <li><a href="{% url 'doghelp:case_details' case.id %}">{{ case.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>
+        You have not created any cases yet.
+    </p>
+    {% endif %}
+    <h3>Other public cases</h3>
+    {% if public_cases %}
+    <ul>
+        {% for case in public_cases %}
+        <li><a href="{% url 'doghelp:case_details' case.id %}">{{ case.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>
+        There are not any public cases.
+    </p>
+    {% endif %}
 </div>
 {% endblock %}
 {% block additional_buttons %}

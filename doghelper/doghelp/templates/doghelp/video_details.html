@@ -14,7 +14,7 @@
 {% block additional_buttons %}
     <div>
         <a href="{% url 'doghelp:update_video_name' video.id %}"><button>Update video name</button></a>
-        <a href="{% url 'doghelp:delete_video' video.id %}"><button>Delete this video</button></a>
+        <a href="{% url 'doghelp:delete_video' video.id %}"><button>Delete</button></a>
         <a href="{% url 'doghelp:main' %}"><button>Back to main page</button><br></a>
     </div>
 {{ block.super }}
