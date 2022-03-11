@@ -39,7 +39,19 @@ class NewCaseForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         pet_name = cleaned_data.get('pet_name')
-        if isinstance(pet_name, str) and not pet_name.isalpha():
+        if isinstance(pet_name, str) and not pet_name.replace(' ', '').isalpha():
             raise ValidationError('Only letters are allowed in the "Pet name" field.')
         else:
             return cleaned_data
+
+
+class UpdateCaseForm(NewCaseForm):
+
+    class Meta:
+        model = Case
+        fields = ['pet_name', 'description', 'is_public', 'video']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user')
+        super(UpdateCaseForm, self).__init__(*args, **kwargs)
+        self.fields['video'].queryset = Video.objects.filter(author_id=user)

@@ -8,7 +8,7 @@ from django.views import View, generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
-from doghelp.forms import LoginForm, NewUserForm, AddVideosForm, NewCaseForm
+from doghelp.forms import LoginForm, NewUserForm, AddVideosForm, NewCaseForm, UpdateCaseForm
 from doghelp.models import Video, Case
 from doghelp.mixins import UserVideoPermTestMixin, UserCaseFullPermTestMixin, UserCaseViewPermTestMixin
 
@@ -105,10 +105,14 @@ class ChangePasswordView(LoginRequiredMixin, View):
 class MainPageView(LoginRequiredMixin, View):
 
     def get(self, request):
+        case = Case.objects.all()
+        is_specialist = 1 in [group.id for group in self.request.user.groups.all()]
         ctx = {
             'videos': Video.objects.filter(author_id=request.user).order_by('-upload_time'),
-            'cases': Case.objects.filter(author_id=request.user).order_by('-last_modified'),
-            'public_cases': Case.objects.filter(is_public=True).exclude(author_id=request.user)
+            'cases': case.filter(author_id=request.user).order_by('-last_modified'),
+            'public_cases': case.filter(is_public=True).exclude(author_id=request.user),
+            'unassigned_cases': case.filter(pet_specialist=None),
+            'is_specialist': is_specialist
         }
         return render(request, 'doghelp/main.html', ctx)
 
@@ -178,8 +182,15 @@ class DeleteCaseView(LoginRequiredMixin, UserCaseFullPermTestMixin, generic.Dele
     success_url = reverse_lazy('doghelp:main')
 
 
-class UpdateCaseView(LoginRequiredMixin, UserCaseFullPermTestMixin, generic.UpdateView):  # TO DO: add proper possibility of updating pet_name (with validation) and videos (properly filtered).
+class UpdateCaseView(LoginRequiredMixin, UserCaseFullPermTestMixin, generic.UpdateView):
     model = Case
-    fields = ['description', 'is_public']
-    success_url = reverse_lazy('doghelp:main')
     template_name = 'doghelp/case_update.html'
+    form_class = UpdateCaseForm
+
+    def get_form_kwargs(self):
+        kwargs = super(UpdateCaseView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('doghelp:case_details', kwargs={'pk': self.kwargs['pk']})

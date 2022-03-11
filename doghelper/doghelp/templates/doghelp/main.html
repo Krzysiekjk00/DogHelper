@@ -29,6 +29,22 @@
         You have not created any cases yet.
     </p>
     {% endif %}
+    {% if is_specialist %}
+    <h3>Unassigned cases</h3>
+        {% if unassigned_cases %}
+            <ul>
+                {% for un_case in unassigned_cases %}
+                <li>
+                    <a href="{% url 'doghelp:case_details' un_case.id %}">{{ un_case.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>
+                There are not any unassigned cases.
+            </p>
+        {% endif %}
+    {% endif %}
     <h3>Other public cases</h3>
     {% if public_cases %}
     <ul>

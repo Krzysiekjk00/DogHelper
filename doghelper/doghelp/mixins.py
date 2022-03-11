@@ -23,19 +23,8 @@ class UserCaseViewPermTestMixin(UserPassesTestMixin):
     def test_func(self):
         case_id = self.kwargs.get('pk')
         case = Case.objects.get(pk=case_id)
-        if case.is_public:
+        user_cases_ids = [case.id for case in self.request.user.cases.all()]
+        if case.is_public or case_id in user_cases_ids:
             return True
         else:
             return False
-
-
-# class UserPassesPermTestMixin(UserPassesTestMixin):
-#
-#     def __init__(self, model=None):
-#         self.model = model
-#
-#     def test_func(self):
-#         if self.model:
-#             object_id = self.kwargs.get('pk')
-#             user_objects_available = [obj.id for obj in self.model.objects.filter()]
-
